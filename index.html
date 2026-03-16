@@ -1,261 +1,320 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 EduPlan</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon-192x192.png" type="image/png">
+    <meta name="theme-color" content="#2196F3">
+    <style>
+        /* ==============================================
+           GLOBAL RESETS & BASE STYLES
+           ============================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        }
 
-<title>EduPlanner</title>
+        :root {
+            --primary: #2196F3;
+            --primary-dark: #1976D2;
+            --danger: #ff4444;
+            --danger-dark: #cc0000;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2d3436;
+            --text-muted: #6c757d;
+            --border: #e9ecef;
+        }
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.5;
+            padding: 1rem;
+        }
 
-<link rel="manifest" href="manifest.json">
 
-<style>
+        /* ==============================================
+           MAIN LAYOUT (MOBILE-FIRST)
+           ============================================== */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+        }
 
-body{
-font-family:Arial;
-background:#2268be;
-display:flex;
-justify-content:center;
-margin-top:30px;
-}
+        @media (max-width: 360px) {
+            .container {
+                padding: 1rem;
+            }
+        }
 
-.container{
-width:340px;
-background:rgb(38, 186, 216);
-border-radius:15px;
-padding:20px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
-}
 
-h2{
-text-align:center;
-margin-bottom:5px;
-}
+        /* ==============================================
+           HEADER STYLES
+           ============================================== */
+        .app-header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
 
-.subtitle{
-text-align:center;
-font-size:12px;
-color:rgb(12, 2, 2);
-margin-bottom:10px;
-}
+        .app-header h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
 
-.menu{
-display:flex;
-justify-content:space-between;
-margin-bottom:15px;
-}
+        @media (min-width: 480px) {
+            .app-header h1 {
+                font-size: 2.2rem;
+            }
+        }
 
-.menu button{
-flex:1;
-margin:3px;
-padding:10px;
-border:none;
-background:#4a90e2;
-color:rgb(16, 2, 123);
-border-radius:10px;
-cursor:pointer;
-font-size:14px;
-}
 
-.screen{
-display:none;
-}
+        /* ==============================================
+           ADD TASK FORM
+           ============================================== */
+        .add-task-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
 
-.active{
-display:block;
-}
+        .task-input {
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
 
-.task{
-background:#0644a1;
-margin:5px;
-padding:8px;
-border-radius:8px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+        .task-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
 
-input{
-width:90%;
-padding:7px;
-margin-top:8px;
-}
+        .add-btn {
+            padding: 1rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
 
-.addBtn{
-margin-top:8px;
-padding:8px;
-background:#0eafaf;
-color:white;
-border:none;
-border-radius:6px;
-cursor:pointer;
-}
+        .add-btn:hover {
+            background-color: var(--primary-dark);
+        }
 
-.dark{
-background:#1e1e1e;
-color:white;
-}
+        @media (min-width: 480px) {
+            .add-task-form {
+                flex-direction: row;
+            }
+            .task-input {
+                flex: 1;
+            }
+            .add-btn {
+                flex-shrink: 0;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
 
-.dark .container{
-background:#2c2c2c;
-}
 
-.dark .task{
-background:#3a3a3a;
-}
+        /* ==============================================
+           TASK LIST STYLES
+           ============================================== */
+        .task-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 0.2rem;
+        }
 
-</style>
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
 
+        .task-item:hover {
+            background-color: rgba(33, 150, 243, 0.03);
+        }
+
+        .task-text {
+            cursor: pointer;
+            font-size: 1rem;
+            word-wrap: break-word;
+            max-width: calc(100% - 40px);
+        }
+
+        .task-item.completed .task-text {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+            transition: background-color 0.2s ease;
+        }
+
+        .delete-btn:hover {
+            background-color: var(--danger-dark);
+        }
+
+
+        /* ==============================================
+           EMPTY STATE STYLES
+           ============================================== */
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem 1rem;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <header class="app-header">
+            <h1>📚 EduPlan</h1>
+        </header>
+        
+        <!-- Add Task Form -->
+        <div class="add-task-form">
+            <input type="text" id="todo-input" class="task-input" placeholder="Add a new study task...">
+            <button id="add-btn" class="add-btn">Add</button>
+        </div>
 
-<div class="container">
+        <!-- Task List -->
+        <ul id="todo-list" class="task-list"></ul>
+    </div>
 
-<h2>📚 EduPlanner</h2>
-<p class="subtitle">Student Daily Planner</p>
+    <script>
+        // Local Storage Key
+        const TODO_KEY = 'eduPlan';
 
-<div class="menu">
-<button onclick="showScreen('schedule')">📅sched</button>
-<button onclick="showScreen('tasks')">✅tasks</button>
-<button onclick="showScreen('notes')">📝notes</button>
-<button onclick="showScreen('settings')">⚙️settings</button>
-</div>
+        // DOM Elements
+        const todoInput = document.getElementById('todo-input');
+        const addBtn = document.getElementById('add-btn');
+        const todoList = document.getElementById('todo-list');
 
+        // Initialize App
+        loadTodos();
 
-<div id="schedule" class="screen active">
-<h3>Today's Schedule</h3>
-<div id="scheduleList"></div>
-<input id="scheduleInput" placeholder="Add schedule">
-<br>
-<button class="addBtn" onclick="addSchedule()">Add Schedule</button>
-</div>
+        // Add Task
+        addBtn.addEventListener('click', () => {
+            const text = todoInput.value.trim();
+            if (!text) return;
+            
+            const todos = getTodos();
+            todos.push({ id: Date.now(), text, completed: false });
+            saveTodos(todos);
+            loadTodos();
+            todoInput.value = '';
+        });
 
+        // Allow Enter Key to Add
+        todoInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addBtn.click();
+        });
 
-<div id="tasks" class="screen">
-<h3>Tasks</h3>
-<div id="taskList"></div>
-<input id="taskInput" placeholder="Enter task">
-<br>
-<button class="addBtn" onclick="addTask()">Add Task</button>
-</div>
+        // Delete/Complete Task
+        todoList.addEventListener('click', (e) => {
+            const id = parseInt(e.target.dataset.id);
+            if (!id) return;
 
-<div id="notes" class="screen">
-<h3>Notes</h3>
-<p></p>
-<p>Study Tip: Review your notes every night.</p>
-<p>Appdev: Study javascript.</p>
+            const todos = getTodos();
+            if (e.target.classList.contains('delete-btn')) {
+                // Delete
+                const updated = todos.filter(todo => todo.id !== id);
+                saveTodos(updated);
+            } else if (e.target.classList.contains('task-text')) {
+                // Toggle Complete
+                const updated = todos.map(todo => 
+                    todo.id === id ? { ...todo, completed: !todo.completed } : todo
+                );
+                saveTodos(updated);
+            }
+            loadTodos();
+        });
 
-</div>
+        // Helper Functions
+        function getTodos() {
+            return JSON.parse(localStorage.getItem(TODO_KEY)) || [];
+        }
 
-<div id="settings" class="screen">
-<h3>Settings</h3>
-<button class="addBtn" onclick="toggleDark()">🌙 Dark Mode</button>
-<br><br>
+        function saveTodos(todos) {
+            localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+        }
 
-</div>
+        function loadTodos() {
+            const todos = getTodos();
+            if (todos.length === 0) {
+                todoList.innerHTML = `
+                    <li class="empty-state">
+                        <span>📖 No study tasks yet!</span>
+                        <p>Add a task to start planning your studies</p>
+                    </li>
+                `;
+                return;
+            }
 
-</div>
+            todoList.innerHTML = todos.map(todo => `
+                <li class="task-item ${todo.completed ? 'completed' : ''}">
+                    <span class="task-text" data-id="${todo.id}">${todo.text}</span>
+                    <button class="delete-btn" data-id="${todo.id}">×</button>
+                </li>
+            `).join('');
+        }
 
-<script>
-
-
-function showScreen(screen){
-let screens=document.querySelectorAll(".screen");
-screens.forEach(function(s){ s.classList.remove("active"); });
-document.getElementById(screen).classList.add("active");
-}
-
-let tasks=[];
-function addTask(){
-let input=document.getElementById("taskInput");
-let task=input.value;
-if(task==="") return;
-tasks.push(task);
-localStorage.setItem("tasks",JSON.stringify(tasks));
-input.value="";
-displayTasks();
-}
-function deleteTask(index){
-tasks.splice(index,1);
-localStorage.setItem("tasks",JSON.stringify(tasks));
-displayTasks();
-}
-function displayTasks(){
-let list=document.getElementById("taskList");
-list.innerHTML="";
-tasks.forEach(function(task,index){
-let div=document.createElement("div");
-div.className="task";
-div.innerHTML=task+" <button onclick='deleteTask("+index+")'>X</button>";
-list.appendChild(div);
-});
-}
-function loadTasks(){
-let saved=localStorage.getItem("tasks");
-if(saved){ tasks=JSON.parse(saved); }
-displayTasks();
-}
-function clearTasks(){
-if(confirm("Delete all tasks?")){
-tasks=[];
-localStorage.removeItem("tasks");
-displayTasks();
-}
-}
-
-let schedules=[];
-function addSchedule(){
-let input = document.getElementById("scheduleInput");
-let text = input.value;
-if(text==="") return;
-schedules.unshift(text);
-localStorage.setItem("schedules", JSON.stringify(schedules));
-input.value="";
-displaySchedules();
-}
-function deleteSchedule(i){
-schedules.splice(i,1);
-localStorage.setItem("schedules", JSON.stringify(schedules));
-displaySchedules();
-}
-function displaySchedules(){
-let list = document.getElementById("scheduleList");
-list.innerHTML="";
-schedules.forEach(function(item,index){
-let div = document.createElement("div");
-div.className="task";
-div.innerHTML = item + " <button onclick='deleteSchedule("+index+")'>X</button>";
-list.appendChild(div);
-});
-}
-function loadSchedules(){
-let data = localStorage.getItem("schedules");
-if(data){ schedules = JSON.parse(data); }
-displaySchedules();
-}
-
-// -----------------
-// Dark Mode
-// -----------------
-function toggleDark(){
-document.body.classList.toggle("dark");
-}
-
-// -----------------
-// Init
-// -----------------
-loadSchedules();
-loadTasks();
-
-</script>
-
-<script>
-// Service Worker for PWA
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("service-worker.js")
-.then(function(){ console.log("Service Worker Registered"); });
-}
-</script>
-
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registered:', reg))
+                    .catch(err => console.error('Service Worker error:', err));
+            });
+        }
+    </script>
 </body>
 </html>
