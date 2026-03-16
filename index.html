@@ -4,47 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📚 EduPlanner</title>
-    <!-- PWA ESSENTIALS - RESTORED -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192x192.png" type="image/png">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
-    <meta name="theme-color" content="#FFFFFF">
-    <meta name="apple-mobile-web-app-status-bar-style" content="#FFFFFF">
+    <meta name="theme-color" content="#1976D2">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#1976D2">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:Roboto,sans-serif; }
-        body { background:#fff; color:#121212; }
+        body { background:#1976D2; color:#121212; min-height:100vh; }
+        :root { --blue:#1976D2; --white:#fff; --black:#121212; --gray:#666; --light-gray:#F5F5F5; }
 
-        /* COLORS */
-        :root { --blue:#2196F3; --gray:#666; --light-gray:#F5F5F5; }
+        .header { max-width:600px; margin:0 auto; padding:1rem; text-align:center; }
+        .header-top { font-size:1.8rem; font-weight:700; color:var(--white); }
+        .tabs { display:flex; justify-content:center; gap:2rem; margin-top:1rem; }
+        .tab-btn { border:none; background:transparent; font-size:1rem; color:var(--white); opacity:0.8; cursor:pointer; padding-bottom:0.5rem; }
+        .tab-btn.active { opacity:1; border-bottom:2px solid var(--white); }
 
-        /* HEADER & TABS */
-        .header { padding:1rem; max-width:600px; margin:0 auto; }
-        .header-top { display:flex; align-items:center; gap:0.5rem; font-size:1.5rem; font-weight:700; }
-        .tabs { display:flex; margin-top:1rem; gap:2rem; }
-        .tab-btn { border:none; background:transparent; font-size:1rem; cursor:pointer; padding-bottom:0.5rem; }
-        .tab-btn.active { color:var(--blue); border-bottom:2px solid var(--blue); }
-
-        /* CONTAINERS */
-        .container { padding:0 1rem 2rem; max-width:600px; margin:0 auto; }
-        .card { background:var(--light-gray); border-radius:8px; padding:1rem; margin-bottom:1rem; }
-
-        /* ITEMS & FORMS */
-        .item { display:flex; justify-content:space-between; align-items:center; padding:1rem; border-bottom:1px solid #eee; cursor:pointer; }
+        .container { max-width:600px; margin:0 auto; padding:0 1rem 2rem; }
+        .card { background:var(--white); border-radius:12px; padding:1.5rem; margin-bottom:1rem; box-shadow:0 2px 8px rgba(0,0,0,0.1); }
+        .form-input { width:100%; padding:1rem; border:1px solid var(--light-gray); border-radius:8px; margin:0.5rem 0; font-size:1rem; }
+        .btn { width:100%; padding:1rem; border:none; border-radius:8px; background:var(--blue); color:var(--white); font-size:1rem; cursor:pointer; }
+        .item { display:flex; justify-content:space-between; align-items:center; padding:1rem; border-bottom:1px solid var(--light-gray); }
         .item-badge { width:16px; height:16px; border-radius:50%; display:inline-block; margin-right:0.5rem; }
-        .more-btn { border:none; background:transparent; font-size:1.2rem; }
-        .form-input { width:100%; padding:1rem; border:1px solid #eee; border-radius:8px; margin:0.5rem 0; }
-        .btn { padding:1rem; border:none; border-radius:8px; cursor:pointer; margin:0.2rem; }
-        .btn-blue { background:var(--blue); color:#fff; }
-        .btn-gray { background:#eee; color:#121212; }
-
-        /* DETAIL VIEW */
-        .detail-view { display:none; padding:1rem; max-width:600px; margin:0 auto; }
-        .detail-row { display:flex; justify-content:space-between; padding:1rem 0; border-bottom:1px solid #eee; }
-        .back-btn { border:none; background:transparent; font-size:1rem; margin-bottom:1rem; }
+        .more-btn { border:none; background:transparent; font-size:1.2rem; cursor:pointer; }
+        .detail-view { display:none; max-width:600px; margin:0 auto; padding:1rem; }
+        .back-btn { border:none; background:transparent; font-size:1rem; color:var(--white); margin-bottom:1rem; cursor:pointer; }
+        .edit-card { background:var(--white); border-radius:12px; padding:1.5rem; }
+        .detail-row { display:flex; justify-content:space-between; padding:1rem 0; border-bottom:1px solid var(--light-gray); }
     </style>
 </head>
 <body>
-    <!-- HEADER -->
     <div class="header">
         <div class="header-top">📚 EduPlanner</div>
         <div class="tabs">
@@ -54,57 +43,49 @@
         </div>
     </div>
 
-    <!-- TASKS TAB -->
     <div id="tasks" class="container active">
         <div class="card">
             <input id="new-task" class="form-input" placeholder="Add new task...">
-            <button class="btn btn-blue" onclick="addItem('task')">Add Task</button>
+            <button class="btn" onclick="addItem('task')">Add Task</button>
         </div>
         <div id="task-list"></div>
     </div>
 
-    <!-- SUBJECTS TAB -->
     <div id="subjects" class="container" style="display:none;">
         <div class="card">
             <input id="new-subject" class="form-input" placeholder="Add new subject...">
-            <button class="btn btn-blue" onclick="addItem('subject')">Add Subject</button>
+            <button class="btn" onclick="addItem('subject')">Add Subject</button>
         </div>
         <div id="subject-list"></div>
     </div>
 
-    <!-- SCHEDULE TAB -->
     <div id="schedule" class="container" style="display:none;">
         <div class="card">
-            <input id="new-event" class="form-input" placeholder="Add new event...">
-            <input id="new-time" class="form-input" type="datetime-local" placeholder="Time">
-            <button class="btn btn-blue" onclick="addItem('schedule')">Add Event</button>
+            <input id="new-schedule" class="form-input" placeholder="Add new schedule...">
+            <input type="datetime-local" id="schedule-datetime" class="form-input">
+            <button class="btn" onclick="addItem('schedule')">Add Schedule</button>
         </div>
         <div id="schedule-list"></div>
     </div>
 
-    <!-- EDIT DETAIL VIEW -->
     <div id="edit-view" class="detail-view">
         <button class="back-btn" onclick="hideEdit()">← Back</button>
-        <h3>Edit Item</h3>
-        <input id="edit-name" class="form-input" placeholder="Name">
-        <input id="edit-details" class="form-input" placeholder="Details (time/location/etc)">
-        <div>
-            <button class="btn btn-blue" onclick="saveEdit()">Save</button>
-            <button class="btn btn-gray" onclick="deleteItem()">Delete</button>
+        <div class="edit-card">
+            <input id="edit-name" class="form-input" placeholder="Name">
+            <input type="datetime-local" id="edit-datetime" class="form-input">
+            <button class="btn" onclick="saveEdit()">Save</button>
+            <button class="btn" style="background:#FF5252; margin-top:0.5rem;" onclick="deleteItem()">Delete</button>
         </div>
     </div>
 
     <script>
-        // STORAGE INIT
         let items = { task:[], subject:[], schedule:[] };
         let currentType = '';
         let currentIndex = -1;
 
-        // LOAD SAVED DATA
         if(localStorage.EduPlanner) items = JSON.parse(localStorage.EduPlanner);
         renderAll();
 
-        // SWITCH TABS
         function showTab(tabId) {
             document.querySelectorAll('.container').forEach(c => c.style.display='none');
             document.getElementById(tabId).style.display='block';
@@ -112,68 +93,63 @@
             event.target.classList.add('active');
         }
 
-        // RENDER ITEMS
-        function renderAll() {
-            renderList('task', '#task-list');
-            renderList('subject', '#subject-list');
-            renderList('schedule', '#schedule-list');
-        }
-        function renderList(type, listId) {
-            const list = document.querySelector(listId);
-            list.innerHTML = items[type].map((item, i) => `
-                <div class="item" onclick="openEdit('${type}', ${i})">
-                    <span><span class="item-badge" style="background:${getColor(type)}"></span>${item.name}</span>
-                    <button class="more-btn">⋮</button>
-                </div>
-            `).join('');
-        }
-
-        // ADD ITEM
         function addItem(type) {
             const input = document.getElementById(`new-${type}`);
             const name = input.value.trim();
             if(!name) return;
-            
-            items[type].push({ name, details: type === 'schedule' ? document.getElementById('new-time').value : '' });
+            const data = type === 'schedule' ? {name, datetime:document.getElementById('schedule-datetime').value} : {name};
+            items[type].push(data);
             saveData(); renderAll(); input.value = '';
-            if(type === 'schedule') document.getElementById('new-time').value = '';
+            if(type === 'schedule') document.getElementById('schedule-datetime').value = '';
         }
 
-        // EDIT/DELETE
         function openEdit(type, index) {
             currentType = type; currentIndex = index;
             const item = items[type][index];
             document.getElementById('edit-name').value = item.name;
-            document.getElementById('edit-details').value = item.details || '';
+            document.getElementById('edit-datetime').value = item.datetime || '';
             document.getElementById('edit-view').style.display='block';
             document.querySelectorAll('.container').forEach(c => c.style.display='none');
         }
+
         function saveEdit() {
             items[currentType][currentIndex] = {
-                name: document.getElementById('edit-name').value.trim(),
-                details: document.getElementById('edit-details').value.trim()
+                name:document.getElementById('edit-name').value.trim(),
+                datetime:document.getElementById('edit-datetime').value
             };
             saveData(); renderAll(); hideEdit();
         }
+
         function deleteItem() {
-            if(confirm('Delete this item?')) {
+            if(confirm('Delete?')) {
                 items[currentType].splice(currentIndex, 1);
                 saveData(); renderAll(); hideEdit();
             }
         }
+
         function hideEdit() {
             document.getElementById('edit-view').style.display='none';
             document.getElementById(currentType).style.display='block';
         }
 
-        // HELPERS
-        function saveData() { localStorage.EduPlanner = JSON.stringify(items); }
-        function getColor(type) {
-            const colors = { task:'#FF5252', subject:'#2196F3', schedule:'#4CAF50' };
-            return colors[type];
+        function renderAll() {
+            renderList('task', '#task-list');
+            renderList('subject', '#subject-list');
+            renderList('schedule', '#schedule-list');
         }
 
-        // REGISTER SERVICE WORKER (PWA OFFLINE SUPPORT)
+        function renderList(type, listId) {
+            const list = document.querySelector(listId);
+            list.innerHTML = items[type].map((item, i) => `
+                <div class="item" onclick="openEdit('${type}', ${i})">
+                    <span><span class="item-badge" style="background:${type==='task'?'#FF5252':type==='subject'?'#4CAF50':'#FFC107'}"></span>${item.name}</span>
+                    <button class="more-btn">⋮</button>
+                </div>
+            `).join('');
+        }
+
+        function saveData() { localStorage.EduPlanner = JSON.stringify(items); }
+
         if('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js')
