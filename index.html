@@ -3,318 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📚 EduPlan</title>
+    <title>📚 EduPlanner</title>
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="icons/icon-192x192.png" type="image/png">
-    <meta name="theme-color" content="#2196F3">
+    <meta name="theme-color" content="#FFFFFF">
     <style>
-        /* ==============================================
-           GLOBAL RESETS & BASE STYLES
-           ============================================== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
-        }
+        /* BASIC RESETS */
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Roboto,sans-serif; }
+        body { background:#fff; color:#121212; }
 
+        /* COLORS */
         :root {
-            --primary: #2196F3;
-            --primary-dark: #1976D2;
-            --danger: #ff4444;
-            --danger-dark: #cc0000;
-            --background: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2d3436;
-            --text-muted: #6c757d;
-            --border: #e9ecef;
+            --blue: #2196F3;
+            --red: #FF5252;
+            --pink: #E91E63;
+            --cyan: #00BCD4;
+            --gray: #666;
+            --light-gray: #F5F5F5;
         }
 
-        body {
-            background-color: var(--background);
-            color: var(--text);
-            line-height: 1.5;
-            padding: 1rem;
+        /* NAV & HEADER */
+        .header { text-align:center; padding:1rem; }
+        .header h1 { font-size:1.8rem; }
+        .tabs { display:flex; border-bottom:1px solid #eee; }
+        .tab-btn {
+            flex:1; padding:1rem; border:none; background:transparent;
+            font-size:1rem; font-weight:500; cursor:pointer;
+        }
+        .tab-btn.active { color:var(--blue); border-bottom:2px solid var(--blue); }
+
+        /* CARDS & SECTIONS */
+        .container { padding:1rem; max-width:600px; margin:0 auto; }
+        .card {
+            background:var(--light-gray); border-radius:8px;
+            padding:1rem; margin-bottom:1rem;
         }
 
-
-        /* ==============================================
-           MAIN LAYOUT (MOBILE-FIRST)
-           ============================================== */
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            padding: 1.5rem;
+        /* TASK/CLASS ITEMS */
+        .item {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:0.8rem; background:#fff; border-radius:6px; margin:0.5rem 0;
         }
+        .item-title { display:flex; align-items:center; gap:0.5rem; }
+        .badge { width:16px; height:16px; border-radius:4px; }
+        .more-btn { border:none; background:transparent; font-size:1.2rem; cursor:pointer; }
 
-        @media (max-width: 360px) {
-            .container {
-                padding: 1rem;
-            }
-        }
-
-
-        /* ==============================================
-           HEADER STYLES
-           ============================================== */
-        .app-header {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .app-header h1 {
-            color: var(--primary);
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        @media (min-width: 480px) {
-            .app-header h1 {
-                font-size: 2.2rem;
-            }
-        }
-
-
-        /* ==============================================
-           ADD TASK FORM
-           ============================================== */
-        .add-task-form {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .task-input {
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.2s ease;
-        }
-
-        .task-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-
-        .add-btn {
-            padding: 1rem;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .add-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        @media (min-width: 480px) {
-            .add-task-form {
-                flex-direction: row;
-            }
-            .task-input {
-                flex: 1;
-            }
-            .add-btn {
-                flex-shrink: 0;
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
-            }
-        }
-
-
-        /* ==============================================
-           TASK LIST STYLES
-           ============================================== */
-        .task-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            max-height: 60vh;
-            overflow-y: auto;
-            padding-right: 0.2rem;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        .task-item:hover {
-            background-color: rgba(33, 150, 243, 0.03);
-        }
-
-        .task-text {
-            cursor: pointer;
-            font-size: 1rem;
-            word-wrap: break-word;
-            max-width: calc(100% - 40px);
-        }
-
-        .task-item.completed .task-text {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-        .delete-btn {
-            background-color: var(--danger);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.1rem;
-            line-height: 1;
-            transition: background-color 0.2s ease;
-        }
-
-        .delete-btn:hover {
-            background-color: var(--danger-dark);
-        }
-
-
-        /* ==============================================
-           EMPTY STATE STYLES
-           ============================================== */
-        .empty-state {
-            text-align: center;
-            color: var(--text-muted);
-            padding: 2rem 1rem;
-            border: 2px dashed var(--border);
-            border-radius: 8px;
-        }
-
-        .empty-state p {
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
+        /* DETAIL VIEW */
+        .detail-view { display:none; }
+        .detail-view.active { display:block; }
+        .detail-row { display:flex; padding:1rem 0; border-bottom:1px solid #eee; }
+        .detail-label { min-width:80px; color:var(--gray); }
+        .back-btn { border:none; background:transparent; font-size:1rem; padding:1rem 0; }
     </style>
 </head>
 <body>
+    <!-- HEADER & TABS -->
+    <div class="header">
+        <h1>📚 EduPlanner</h1>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('subjects')">Subjects</button>
+            <button class="tab-btn" onclick="showTab('assignments')">Assignments</button>
+            <button class="tab-btn" onclick="showTab('agenda')">Agenda</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
     <div class="container">
-        <header class="app-header">
-            <h1>📚 EduPlan</h1>
-        </header>
-        
-        <!-- Add Task Form -->
-        <div class="add-task-form">
-            <input type="text" id="todo-input" class="task-input" placeholder="Add a new study task...">
-            <button id="add-btn" class="add-btn">Add</button>
+        <!-- SUBJECTS TAB -->
+        <div id="subjects" class="tab-content active">
+            <div class="card">
+                <input type="text" placeholder="Add new study task..." style="width:100%; padding:1rem; border:1px solid #eee; border-radius:8px; margin-bottom:1rem;">
+                <button style="width:100%; padding:1rem; border:none; background:var(--blue); color:#fff; border-radius:8px;">Add Task</button>
+            </div>
+
+            <!-- Sample Subjects -->
+            <div class="item">
+                <div class="item-title">
+                    <span class="badge" style="background:var(--red);"></span>
+                    Finance
+                </div>
+                <button class="more-btn">⋮</button>
+            </div>
+            <div class="item">
+                <div class="item-title">
+                    <span class="badge" style="background:var(--blue);"></span>
+                    Business
+                </div>
+                <button class="more-btn">⋮</button>
+            </div>
+            <div class="item">
+                <div class="item-title">
+                    <span class="badge" style="background:var(--pink);"></span>
+                    English
+                </div>
+                <button class="more-btn">⋮</button>
+            </div>
         </div>
 
-        <!-- Task List -->
-        <ul id="todo-list" class="task-list"></ul>
+        <!-- ASSIGNMENTS TAB -->
+        <div id="assignments" class="tab-content" style="display:none;">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;">📝 Assignments</h3>
+                <div class="item">
+                    <div class="item-title">Uber Business Model Essay</div>
+                    <span style="color:var(--gray); font-size:0.9rem;">Due: Oct 12</span>
+                </div>
+                <div class="item">
+                    <div class="item-title">Math Homework Set 2</div>
+                    <span style="color:var(--gray); font-size:0.9rem;">Due: Oct 10</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- AGENDA TAB -->
+        <div id="agenda" class="tab-content" style="display:none;">
+            <div class="card">
+                <h3 style="margin-bottom:1rem;">📅 Today - Oct 8</h3>
+                <div class="item">
+                    <div class="item-title">8:00 AM - Finance Class</div>
+                    <span style="color:var(--blue);">Main Building</span>
+                </div>
+                <div class="item">
+                    <div class="item-title">2:00 PM - Study Group</div>
+                    <span style="color:var(--blue);">Library</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CLASS DETAIL VIEW -->
+        <div id="class-detail" class="detail-view">
+            <button class="back-btn" onclick="goBack()">← Back</button>
+            <div class="card" style="margin-top:1rem;">
+                <h3>📊 Finance</h3>
+                <div class="detail-row">
+                    <div class="detail-label">Type:</div>
+                    <div>Class</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Schedule:</div>
+                    <div>Every Sunday, 8:00 AM</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Instructor:</div>
+                    <div>Mr. Dalton</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Location:</div>
+                    <div>Main Building</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Local Storage Key
-        const TODO_KEY = 'eduPlan';
-
-        // DOM Elements
-        const todoInput = document.getElementById('todo-input');
-        const addBtn = document.getElementById('add-btn');
-        const todoList = document.getElementById('todo-list');
-
-        // Initialize App
-        loadTodos();
-
-        // Add Task
-        addBtn.addEventListener('click', () => {
-            const text = todoInput.value.trim();
-            if (!text) return;
-            
-            const todos = getTodos();
-            todos.push({ id: Date.now(), text, completed: false });
-            saveTodos(todos);
-            loadTodos();
-            todoInput.value = '';
-        });
-
-        // Allow Enter Key to Add
-        todoInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addBtn.click();
-        });
-
-        // Delete/Complete Task
-        todoList.addEventListener('click', (e) => {
-            const id = parseInt(e.target.dataset.id);
-            if (!id) return;
-
-            const todos = getTodos();
-            if (e.target.classList.contains('delete-btn')) {
-                // Delete
-                const updated = todos.filter(todo => todo.id !== id);
-                saveTodos(updated);
-            } else if (e.target.classList.contains('task-text')) {
-                // Toggle Complete
-                const updated = todos.map(todo => 
-                    todo.id === id ? { ...todo, completed: !todo.completed } : todo
-                );
-                saveTodos(updated);
-            }
-            loadTodos();
-        });
-
-        // Helper Functions
-        function getTodos() {
-            return JSON.parse(localStorage.getItem(TODO_KEY)) || [];
+        // Switch Tabs
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
         }
 
-        function saveTodos(todos) {
-            localStorage.setItem(TODO_KEY, JSON.stringify(todos));
-        }
+        // Open/Close Detail
+        function openDetail() { document.getElementById('class-detail').classList.add('active'); }
+        function goBack() { document.getElementById('class-detail').classList.remove('active'); }
 
-        function loadTodos() {
-            const todos = getTodos();
-            if (todos.length === 0) {
-                todoList.innerHTML = `
-                    <li class="empty-state">
-                        <span>📖 No study tasks yet!</span>
-                        <p>Add a task to start planning your studies</p>
-                    </li>
-                `;
-                return;
-            }
-
-            todoList.innerHTML = todos.map(todo => `
-                <li class="task-item ${todo.completed ? 'completed' : ''}">
-                    <span class="task-text" data-id="${todo.id}">${todo.text}</span>
-                    <button class="delete-btn" data-id="${todo.id}">×</button>
-                </li>
-            `).join('');
-        }
-
-        // Register Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('Service Worker registered:', reg))
-                    .catch(err => console.error('Service Worker error:', err));
-            });
-        }
+        // Add Click to Open Detail
+        document.querySelectorAll('.item').forEach(item => item.onclick = openDetail);
     </script>
 </body>
 </html>
